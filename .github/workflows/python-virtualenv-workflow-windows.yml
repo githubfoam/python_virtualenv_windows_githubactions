@@ -1,0 +1,59 @@
+name: "windows python virtualenv CI workflow"
+
+
+
+on:
+  push:
+    branches: [ test ]
+
+
+
+jobs:
+
+  windows-latest-venv:
+    name: "Microsoft Windows Server 2019 Datacenter python venv"  
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: "osfingerprinting"
+      run: systeminfo | more       
+    - name: "Deploy pyhton 3.8.1 virtualenv" 
+      run: |
+        python --version 
+        choco install python --version 3.8.1
+        pip install virtualenv
+        virtualenv $HOME/venv
+        . $HOME/venv/Scripts/activate
+        python --version
+        pip install -r requirements.txt 
+        echo $HOME
+        choco install terraform
+        terraform -help
+        # deactivate  
+
+  windows-2016-venv-terraform:
+    name: "Microsoft Windows Server 2016 Datacenter python venv"
+    runs-on: windows-2016
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: "check if server is virtual"
+      run: Systeminfo | findstr /i model   
+    - name: "check the PROCESSOR_ARCHITECTURE environment variable.64-bit systems will say AMD64 and 32-bit systems should say x86"
+      run: wmic OS get OSArchitecture     
+    - name: "osfingerprinting"
+      run: systeminfo | more  
+    - name: "Deploy pyhton 3.8.1 virtualenv" 
+      run: |
+        python --version 
+        choco install python --version 3.8.1
+        pip install virtualenv
+        virtualenv $HOME/venv
+        . $HOME/venv/Scripts/activate
+        python --version
+        pip install -r requirements.txt 
+        echo $HOME
+        choco install terraform
+        terraform -help
+        # deactivate         
